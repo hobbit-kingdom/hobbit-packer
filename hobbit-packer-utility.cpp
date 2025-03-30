@@ -156,11 +156,24 @@ void moveLevelFolders() {
 					if (result != 0) {
 						std::cerr << "Error running batch file for: " << levelFolderName << std::endl;
 					}
+
+					// Delete the 'special_name' folder after processing
+					if (fs::exists(currentPath / specialName)) {
+						fs::remove_all(currentPath / specialName); // This will delete the folder and all its contents
+						std::cout << "Deleted folder: " << specialName << std::endl;
+					}
 				}
 				else {
 					std::cout << "No mapping found for level: " << levelFolderName << ", skipping..." << std::endl;
 				}
 			}
+		}
+
+		// Delete the 'LEVELS' folder after processing
+		fs::path levelsFolderPath = currentPath / "LEVELS";
+		if (fs::exists(levelsFolderPath)) {
+			fs::remove_all(levelsFolderPath); // Delete the 'LEVELS' folder and its contents
+			std::cout << "Deleted 'LEVELS' folder: " << levelsFolderPath << std::endl;
 		}
 	}
 	catch (const fs::filesystem_error& e) {
@@ -169,12 +182,13 @@ void moveLevelFolders() {
 }
 
 
+
 int main() {
 	int choice = 0;
 	char skipAudioChoice = 'n';
 
 	std::cout << "Choose an option:\n";
-	std::cout << "1. Pack (Do nothing)\n";
+	std::cout << "1. Pack\n";
 	std::cout << "2. Unpack (Run undfs.exe and delete .dfs and .000 files)\n";
 	std::cout << "Enter your choice (1 or 2): ";
 	std::cin >> choice;
